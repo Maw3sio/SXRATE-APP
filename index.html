@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SXRATE</title>
+<style>
+    body {
+        margin: 0;
+        font-family: 'Poppins', sans-serif;
+        background: linear-gradient(135deg, #ff33aa, #33aaff);
+        color: white;
+        text-align: center;
+        overflow-x: hidden;
+    }
+
+    .hidden { display: none; }
+
+    .screen {
+        padding: 40px 20px;
+        animation: fade 0.5s ease;
+    }
+
+    @keyframes fade {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .logo {
+        width: 70%;
+        max-width: 350px;
+        margin: auto;
+        display: block;
+    }
+
+    .btn {
+        background: rgba(255,255,255,0.15);
+        border: 2px solid white;
+        padding: 15px 25px;
+        border-radius: 18px;
+        margin: 12px auto;
+        display: block;
+        width: 70%;
+        font-size: 1.2rem;
+        font-weight: bold;
+        color: white;
+        backdrop-filter: blur(8px);
+        transition: 0.2s;
+    }
+
+    .btn:hover {
+        background: rgba(255,255,255,0.3);
+        transform: scale(1.04);
+    }
+
+    .input-box {
+        background: rgba(255,255,255,0.18);
+        padding: 30px 20px;
+        border-radius: 20px;
+        backdrop-filter: blur(5px);
+        margin-top: 30px;
+    }
+
+    input {
+        width: 80%;
+        padding: 15px;
+        border-radius: 12px;
+        border: none;
+        margin-top: 10px;
+        font-size: 1.2rem;
+    }
+
+    .caption {
+        font-size: 1.3rem;
+        font-weight: 600;
+        margin-bottom: 15px;
+    }
+</style>
+</head>
+<body>
+
+<!-- SCHERMATA 1 – INTRO -->
+<div id="screen1" class="screen">
+    <h1>BENVENUTI SU</h1>
+    <img src="logo.png" class="logo">
+    <button class="btn" onclick="goTo(2)">AVANTI</button>
+
+    <button class="btn" style="width:50%; font-size:0.9rem;" onclick="alert('SXRATE è un sistema avanzato di valutazione basato sulla Costante Rum-Enzo K•RE.\nOgni voto produce un valore finale tra 0 e 5 con tendenza a infinito se la qualità supera il limite umano.')">
+        ℹ️ Info
+    </button>
+</div>
+
+<!-- SCHERMATA 2 – MENU -->
+<div id="screen2" class="screen hidden">
+    <img src="logo.png" class="logo">
+    <button class="btn" onclick="startRating()">CALCOLA</button>
+    <button class="btn" onclick="showHistory()">STORICO</button>
+</div>
+
+<!-- SCHERMATA PARAMETRO -->
+<div id="paramScreen" class="screen hidden">
+    <div class="input-box">
+        <div id="paramCaption" class="caption"></div>
+        <input type="number" id="paramInput" step="0.001" min="0" max="10" placeholder="0.000 – 10.000">
+    </div>
+    <button class="btn" onclick="nextParam()">AVANTI</button>
+</div>
+
+<!-- SCHERMATA RISULTATO -->
+<div id="resultScreen" class="screen hidden">
+    <h1>VALORE FINALE:</h1>
+    <h2 id="finalValue"></h2>
+    <p id="finalMeaning"></p>
+    <button class="btn" onclick="goTo(2)">TORNA AL MENU</button>
+</div>
+
+<!-- SCHERMATA STORICO -->
+<div id="historyScreen" class="screen hidden">
+    <h1>STORICO</h1>
+    <div id="historyList"></div>
+    <button class="btn" onclick="goTo(2)">INDIETRO</button>
+</div>
+
+<script>
+/* SISTEMA DI NAVIGAZIONE */
+function goTo(n) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.add('hidden'));
+    document.getElementById("screen" + n)?.classList.remove("hidden");
+}
+
+/* PARAMETRI */
+const params = [
+    { nome: "Bellezza (viso)", frasi: ["Faccia da sbanco o da spavento? Vediamo…", "Zoom mentale sul viso.", "Quanto ti scioglie lo sguardo?", "Faccia da profilo o da multa?", "Pronto a giudicare senza pietà.", "Potrebbe essere una dea o un disastro.", "Valutiamo la fotogenia naturale."] },
+    { nome: "Tette", frasi: ["Santo cielo o tristezza infinita?", "Le gemelle si valutano ora.", "Qui serve freddezza tecnica.", "Volume, forma, vibrazioni cosmiche.", "Livello seni: pronto a giudicare.", "Petto in rassegna, saluto militare.", "Le forme parlano, tu ascolta."] },
+    { nome: "Culo", frasi: ["È marmo o è tristezza?", "Quanto rimbalzo c’è qui?", "Forma, definizione, poesia.", "Il lato B non mente mai.", "Preparati alla misurazione cosmica.", "Qui si decide metà del destino.", "Fede assoluta o delusione eterna."] },
+    { nome: "Fascino", frasi: ["Aura magnetica o zero vibe?", "Ti ipnotizza o ti addormenta?", "Fascino criminale?", "Energia che trascina o respinge?", "Presenza scenica totale.", "Carisma naturale.", "Seduzione attiva."] },
+    { nome: "Voce", frasi: ["Ti scioglie o ti perfora il cranio?", "Voce da sirena o da trapano?", "Tono, dolcezza, musicalità.", "Parla e tu tremi?", "Vibrazioni vocali in arrivo.", "Sussurri che sciolgono.", "Timbro decisivo."] },
+    { nome: "Abbigliamento", frasi: ["Vestita da angelo o da disastro?", "Stile da urlo?", "Fit perfetto o catastrofe?", "Outfit che spacca?", "Look calibrato.", "Moda aggressiva.", "Cura dei dettagli."] },
+    { nome: "PORKAGGINE", frasi: ["Santo cielo quanto è sporca?", "Lasciala parlare lo capisci.", "Livello fuoco?", "Sguardo e vibrazioni hot.", "Disponibilità energetica.", "Quanto trasmette peccato?", "Potenziale proibito."] },
+    { nome: "Fieraggine", frasi: ["Quanto ti vanti se esci con lei?", "Da presentare o nascondere?", "Ti renderebbe re del gruppo?", "Livello bragging?", "Orgoglio sociale.", "Valore di rappresentanza.", "Stupiresti tutti?"] },
+    { nome: "Condizione rispetto all’età", frasi: ["Sembra più giovane?", "Incredibile mantenimento?", "Età biologica vs visiva.", "Invecchiamento VIP?", "Livello WOW per età.", "Stupisce?", "Qualità temporale."] }
+];
+
+let values = [];
+let currentParam = 0;
+
+/* GENERA PARAMETRI */
+function startRating() {
+    values = [];
+    currentParam = 0;
+    showParam();
+}
+
+/* MOSTRA PARAMETRO */
+function showParam() {
+    goTo("paramScreen".replace("screen","")); // hack to hide all
+    document.querySelectorAll('.screen').forEach(s => s.classList.add('hidden'));
+    document.getElementById("paramScreen").classList.remove("hidden");
+
+    const p = params[currentParam];
+    const frase = p.frasi[Math.floor(Math.random()*p.frasi.length)];
+
+    document.getElementById("paramCaption").textContent = p.nome + " — " + frase;
+    document.getElementById("paramInput").value = "";
+}
+
+function nextParam() {
+    const val = parseFloat(document.getElementById("paramInput").value);
+    if (isNaN(val) || val < 0 || val > 10) {
+        alert("Inserisci un valore valido tra 0.000 e 10.000");
+        return;
+    }
+    values.push(val);
+
+    currentParam++;
+    if (currentParam < params.length) showParam();
+    else calculateFinal();
+}
+
+/* CALCOLO */
+function calculateFinal() {
+    const avg = values.reduce((a,b)=>a+b,0)/values.length;
+
+    // Costante Rum-Enzo K•RE
+    const KRE = 4.213;
+
+    let mapped;
+    if (avg <= 4) mapped = avg * 0.125;
+    else if (avg <= 7) mapped = 0.5 + ((avg-4)/3)*0.5;
+    else if (avg <= 8.5) mapped = 1;
+    else mapped = 1 + (Math.exp((avg-8.5)*KRE)-1);
+
+    showResult(mapped);
+}
+
+/* RISULTATO */
+function showResult(v) {
+    goTo("resultScreen".replace("screen",""));
+    document.getElementById("finalValue").textContent = v.toFixed(3);
+
+    let meaning = "";
+    if (v < 0.5) meaning = "ASSOLUTAMENTE NON CHIAVARE";
+    else if (v < 1) meaning = "SE È GIÀ DENTRO NON LO TOGLIERE";
+    else if (v < 4.5) meaning = "SCOPAAAAA";
+    else if (v < 5) meaning = "SE FOSSE LEGALE LO STUPRO…";
+    else meaning = "POTRESTI MORIRE PER CHIAVARCI";
+
+    document.getElementById("finalMeaning").textContent = meaning;
+
+    saveHistory(v);
+}
+
+/* STORICO */
+function saveHistory(v) {
+    const old = JSON.parse(localStorage.getItem("sxrate") || "[]");
+    old.push({ value: v.toFixed(3), time: new Date().toLocaleString() });
+    localStorage.setItem("sxrate", JSON.stringify(old));
+}
+
+function showHistory() {
+    goTo("historyScreen".replace("screen",""));
+    const list = JSON.parse(localStorage.getItem("sxrate") || "[]");
+
+    let html = "";
+    list.reverse().forEach(i => {
+        html += `<p><b>${i.value}</b> — ${i.time}</p>`;
+    });
+    document.getElementById("historyList").innerHTML = html || "Nessun dato salvato.";
+}
+</script>
+
+</body>
+</html>
