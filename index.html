@@ -1,232 +1,425 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="it">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SXRATE</title>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>SXRATE — Rum-Enzo Edition</title>
+
+<link rel="manifest" href="manifest.json">
+
+<!-- Font -->
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
+
 <style>
-    body {
-        margin: 0;
-        font-family: 'Poppins', sans-serif;
-        background: linear-gradient(135deg, #ff33aa, #33aaff);
-        color: white;
-        text-align: center;
-        overflow-x: hidden;
-    }
+:root{
+  --pink:#ff33b8;
+  --blue:#00b7ff;
+  --white:#ffffff;
+  --glass: rgba(255,255,255,0.06);
+  --neon-pink: rgba(255,51,184,0.25);
+  --neon-blue: rgba(0,183,255,0.22);
+  --maxw:480px;
+  --radius:14px;
+}
 
-    .hidden { display: none; }
+/* Reset */
+*{box-sizing:border-box}
+html,body{height:100%;margin:0;font-family:'Poppins',system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:#08080a;color:var(--white)}
+.app-shell{display:flex;align-items:center;justify-content:center;padding:20px;min-height:100vh}
 
-    .screen {
-        padding: 40px 20px;
-        animation: fade 0.5s ease;
-    }
+/* Card */
+.card{width:100%;max-width:var(--maxw);border-radius:18px;overflow:hidden;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));box-shadow:0 18px 60px rgba(0,0,0,0.6)}
 
-    @keyframes fade {
-        from { opacity: 0; transform: translateY(10px); }
-        to { opacity: 1; transform: translateY(0); }
-    }
+/* header-band */
+.header-band{height:120px;background:linear-gradient(90deg,var(--pink) 50%, var(--blue) 50%);display:flex;align-items:center;padding:14px;gap:12px}
+.logo{width:72px;height:72px;border-radius:16px;object-fit:cover;box-shadow:0 8px 30px rgba(0,0,0,0.45)}
+.title-block h1{margin:0;font-size:20px}
+.title-block p{margin:3px 0 0;font-size:12px;opacity:0.95}
 
-    .logo {
-        width: 70%;
-        max-width: 350px;
-        margin: auto;
-        display: block;
-    }
+/* content */
+.content{padding:16px;min-height:420px;display:flex;flex-direction:column;gap:12px}
 
-    .btn {
-        background: rgba(255,255,255,0.15);
-        border: 2px solid white;
-        padding: 15px 25px;
-        border-radius: 18px;
-        margin: 12px auto;
-        display: block;
-        width: 70%;
-        font-size: 1.2rem;
-        font-weight: bold;
-        color: white;
-        backdrop-filter: blur(8px);
-        transition: 0.2s;
-    }
+/* views */
+.view{display:none}
+.view.active{display:block}
 
-    .btn:hover {
-        background: rgba(255,255,255,0.3);
-        transform: scale(1.04);
-    }
+/* home */
+.home-center{text-align:center}
+.big-title{font-size:32px;font-weight:800;margin:6px 0}
+.subtitle{font-size:13px;opacity:0.95;margin-bottom:10px}
 
-    .input-box {
-        background: rgba(255,255,255,0.18);
-        padding: 30px 20px;
-        border-radius: 20px;
-        backdrop-filter: blur(5px);
-        margin-top: 30px;
-    }
+/* buttons */
+.row{display:flex;gap:10px;justify-content:center}
+.btn{border:none;padding:12px 16px;border-radius:12px;font-weight:800;cursor:pointer;color:var(--white);box-shadow:0 8px 18px rgba(0,0,0,0.25)}
+.btn.primary{background:linear-gradient(90deg,var(--pink),var(--blue))}
+.btn.ghost{background:transparent;border:2px solid rgba(255,255,255,0.06)}
 
-    input {
-        width: 80%;
-        padding: 15px;
-        border-radius: 12px;
-        border: none;
-        margin-top: 10px;
-        font-size: 1.2rem;
-    }
+/* scale-card */
+.scale-card{background:var(--glass);padding:12px;border-radius:12px;margin-top:12px;font-size:14px}
 
-    .caption {
-        font-size: 1.3rem;
-        font-weight: 600;
-        margin-bottom: 15px;
-    }
+/* param */
+.param-top{display:flex;gap:12px;align-items:center}
+.param-title{font-size:20px;margin:0}
+.didascalia{font-size:15px;color:rgba(255,255,255,0.95);margin:6px 0}
+.num-display{width:70%;text-align:center;font-size:34px;padding:12px;border-radius:12px;border:none;background:rgba(255,255,255,0.02);color:var(--white);letter-spacing:1px}
+.keypad{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;max-width:360px;margin:8px auto}
+.key{padding:14px;font-size:20px;border-radius:12px;border:none;background:linear-gradient(180deg,rgba(255,255,255,0.03),rgba(255,255,255,0.02));color:var(--white);box-shadow:0 8px 18px rgba(0,0,0,0.25)}
+.key:active{transform:translateY(1px);opacity:0.95}
+
+/* result */
+.result-card{background:linear-gradient(180deg,rgba(255,255,255,0.02),rgba(255,255,255,0.01));padding:18px;border-radius:12px;text-align:center}
+.result-value{font-size:48px;font-weight:900}
+.result-caption{margin-top:8px;font-size:15px}
+
+/* history */
+.history-list{background:var(--glass);padding:12px;border-radius:12px;min-height:140px;overflow:auto}
+.history-item{display:flex;justify-content:space-between;align-items:center;padding:8px;border-radius:8px;margin-bottom:8px;background:rgba(255,255,255,0.02)}
+
+/* small */
+.small-muted{font-size:12px;opacity:0.85}
+.center{display:flex;align-items:center;justify-content:center}
+
+/* transitions */
+.fade-in{animation:fade 260ms ease}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
 </style>
 </head>
 <body>
+  <div class="app-shell">
+    <div class="card" role="application" aria-label="SXRATE App">
 
-<!-- SCHERMATA 1 – INTRO -->
-<div id="screen1" class="screen">
-    <h1>BENVENUTI SU</h1>
-    <img src="logo.png" class="logo">
-    <button class="btn" onclick="goTo(2)">AVANTI</button>
+      <!-- HEADER BAND -->
+      <div class="header-band">
+        <img id="appLogo" src="logo.png" class="logo" alt="SXRATE logo">
+        <div class="title-block">
+          <h1>SXRATE</h1>
+          <p class="small-muted">Costante Rum-Enzo • K•RE = 4</p>
+        </div>
+      </div>
 
-    <button class="btn" style="width:50%; font-size:0.9rem;" onclick="alert('SXRATE è un sistema avanzato di valutazione basato sulla Costante Rum-Enzo K•RE.\nOgni voto produce un valore finale tra 0 e 5 con tendenza a infinito se la qualità supera il limite umano.')">
-        ℹ️ Info
-    </button>
-</div>
+      <!-- CONTENT -->
+      <div class="content">
 
-<!-- SCHERMATA 2 – MENU -->
-<div id="screen2" class="screen hidden">
-    <img src="logo.png" class="logo">
-    <button class="btn" onclick="startRating()">CALCOLA</button>
-    <button class="btn" onclick="showHistory()">STORICO</button>
-</div>
+        <!-- SPLASH / WELCOME -->
+        <section id="view-welcome" class="view active fade-in">
+          <div class="home-center">
+            <h2>BENVENUTI SU</h2>
+            <img src="logo.png" alt="SXRATE" style="width:70%;max-width:360px;border-radius:18px;box-shadow:0 12px 40px rgba(0,0,0,0.5)">
+            <div style="margin-top:18px" class="row">
+              <button class="btn primary" id="enterBtn">ENTRA</button>
+              <button class="btn ghost" id="infoBtn">INFO</button>
+            </div>
+          </div>
+        </section>
 
-<!-- SCHERMATA PARAMETRO -->
-<div id="paramScreen" class="screen hidden">
-    <div class="input-box">
-        <div id="paramCaption" class="caption"></div>
-        <input type="number" id="paramInput" step="0.001" min="0" max="10" placeholder="0.000 – 10.000">
+        <!-- INFO (modal-like view) -->
+        <section id="view-info" class="view">
+          <h3>Che è SXRATE?</h3>
+          <p class="small-muted">SXRATE usa la Costante Rum-Enzo (K•RE) per convertire una serie di valutazioni in un punteggio non lineare (0–5 con tendenza infinita oltre il 10+). Ogni parametro ha frasi random prima dell'inserimento per dare vibe.</p>
+          <div class="row"><button class="btn ghost" id="infoBack">INDIETRO</button></div>
+        </section>
+
+        <!-- MENU -->
+        <section id="view-menu" class="view">
+          <div class="home-center">
+            <img src="logo.png" alt="SXRATE" style="width:60%;max-width:300px;border-radius:14px">
+            <div style="margin-top:16px" class="row">
+              <button class="btn primary" id="menuCalc">CALCOLA</button>
+              <button class="btn ghost" id="menuHist">STORICO</button>
+            </div>
+            <div class="scale-card" style="margin-top:16px;text-align:left">
+              <strong>Scala Valutazioni</strong>
+              <ul style="margin:8px 0 0 16px">
+                <li><strong>0 – 0.5</strong> → ASSOLUTAMENTE NON CHIAVARE</li>
+                <li><strong>0.5 – 0.9</strong> → SE È GIÀ DENTRO NON LO TOGLIERE</li>
+                <li><strong>1 – 4.5</strong> → SCOPAAAAA</li>
+                <li><strong>4.5 – 5</strong> → LIVELLO STXPRO</li>
+                <li><strong>5 – +∞</strong> → POTRESTI MORIRE PER CHIAVARCI</li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        <!-- PARAM TEMPLATE VIEW (reused) -->
+        <section id="view-param" class="view">
+          <div style="display:flex;flex-direction:column;align-items:center">
+            <div class="param-top" style="width:100%;max-width:420px">
+              <img id="paramIcon" class="logo" src="logo.png" alt="">
+              <div style="flex:1">
+                <h3 id="paramTitle" class="param-title">Parametro</h3>
+                <div id="progressText" class="small-muted">1/10</div>
+                <div style="height:8px;background:rgba(255,255,255,0.04);border-radius:8px;margin-top:6px;overflow:hidden">
+                  <i id="progressBar" style="display:block;height:100%;width:0;background:linear-gradient(90deg,var(--pink),var(--blue));"></i>
+                </div>
+              </div>
+            </div>
+
+            <p id="paramDida" class="didascalia">Didascalia</p>
+
+            <input id="numDisplay" class="num-display" placeholder="0.000" readonly>
+
+            <div id="keypad" class="keypad" aria-hidden="false"></div>
+
+            <div class="row" style="margin-top:12px">
+              <button class="btn ghost" id="btnBack">INDIETRO</button>
+              <button class="btn primary" id="btnNext">AVANTI</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- BONUS view (reuses same template) -->
+        <section id="view-bonus" class="view">
+          <div style="text-align:center">
+            <h3>Bonus</h3>
+            <p id="bonusDida" class="didascalia"></p>
+            <input id="bonusDisplay" class="num-display" placeholder="0.000" readonly>
+            <div id="keypadBonus" class="keypad"></div>
+            <div class="row" style="margin-top:12px">
+              <button class="btn ghost" id="bonusBack">INDIETRO</button>
+              <button class="btn primary" id="bonusDone">RISULTATO</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- RESULT -->
+        <section id="view-result" class="view">
+          <div class="result-card">
+            <div id="resultValue" class="result-value">--</div>
+            <div id="resultCaption" class="result-caption">--</div>
+            <div id="resultMeta" class="small-muted" style="margin-top:8px"></div>
+
+            <div class="row" style="margin-top:12px">
+              <button class="btn primary" id="saveBtn">SALVA</button>
+              <button class="btn ghost" id="shareBtn">CONDIVIDI</button>
+              <button class="btn ghost" id="homeFromResult">HOME</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- HISTORY -->
+        <section id="view-history" class="view">
+          <h3>Storico</h3>
+          <div id="historyList" class="history-list"></div>
+          <div class="row" style="margin-top:12px">
+            <button class="btn ghost" id="clearHistory">SVUOTA</button>
+            <button class="btn ghost" id="homeFromHistory">HOME</button>
+          </div>
+        </section>
+
+      </div>
     </div>
-    <button class="btn" onclick="nextParam()">AVANTI</button>
-</div>
-
-<!-- SCHERMATA RISULTATO -->
-<div id="resultScreen" class="screen hidden">
-    <h1>VALORE FINALE:</h1>
-    <h2 id="finalValue"></h2>
-    <p id="finalMeaning"></p>
-    <button class="btn" onclick="goTo(2)">TORNA AL MENU</button>
-</div>
-
-<!-- SCHERMATA STORICO -->
-<div id="historyScreen" class="screen hidden">
-    <h1>STORICO</h1>
-    <div id="historyList"></div>
-    <button class="btn" onclick="goTo(2)">INDIETRO</button>
-</div>
+  </div>
 
 <script>
-/* SISTEMA DI NAVIGAZIONE */
-function goTo(n) {
-    document.querySelectorAll('.screen').forEach(s => s.classList.add('hidden'));
-    document.getElementById("screen" + n)?.classList.remove("hidden");
-}
+/* SXRATE single-file app logic (multi-view SPA)
+   - 9 params, each its own screen content generated dynamically
+   - 7 random didascalie per param
+   - keypad with clamp: params 0..10 (3 decimals), bonus 0..1
+   - conversion K•RE = 4
+   - localStorage history
+*/
 
-/* PARAMETRI */
-const params = [
-    { nome: "Bellezza (viso)", frasi: ["Faccia da sbanco o da spavento? Vediamo…", "Zoom mentale sul viso.", "Quanto ti scioglie lo sguardo?", "Faccia da profilo o da multa?", "Pronto a giudicare senza pietà.", "Potrebbe essere una dea o un disastro.", "Valutiamo la fotogenia naturale."] },
-    { nome: "Tette", frasi: ["Santo cielo o tristezza infinita?", "Le gemelle si valutano ora.", "Qui serve freddezza tecnica.", "Volume, forma, vibrazioni cosmiche.", "Livello seni: pronto a giudicare.", "Petto in rassegna, saluto militare.", "Le forme parlano, tu ascolta."] },
-    { nome: "Culo", frasi: ["È marmo o è tristezza?", "Quanto rimbalzo c’è qui?", "Forma, definizione, poesia.", "Il lato B non mente mai.", "Preparati alla misurazione cosmica.", "Qui si decide metà del destino.", "Fede assoluta o delusione eterna."] },
-    { nome: "Fascino", frasi: ["Aura magnetica o zero vibe?", "Ti ipnotizza o ti addormenta?", "Fascino criminale?", "Energia che trascina o respinge?", "Presenza scenica totale.", "Carisma naturale.", "Seduzione attiva."] },
-    { nome: "Voce", frasi: ["Ti scioglie o ti perfora il cranio?", "Voce da sirena o da trapano?", "Tono, dolcezza, musicalità.", "Parla e tu tremi?", "Vibrazioni vocali in arrivo.", "Sussurri che sciolgono.", "Timbro decisivo."] },
-    { nome: "Abbigliamento", frasi: ["Vestita da angelo o da disastro?", "Stile da urlo?", "Fit perfetto o catastrofe?", "Outfit che spacca?", "Look calibrato.", "Moda aggressiva.", "Cura dei dettagli."] },
-    { nome: "PORKAGGINE", frasi: ["Santo cielo quanto è sporca?", "Lasciala parlare lo capisci.", "Livello fuoco?", "Sguardo e vibrazioni hot.", "Disponibilità energetica.", "Quanto trasmette peccato?", "Potenziale proibito."] },
-    { nome: "Fieraggine", frasi: ["Quanto ti vanti se esci con lei?", "Da presentare o nascondere?", "Ti renderebbe re del gruppo?", "Livello bragging?", "Orgoglio sociale.", "Valore di rappresentanza.", "Stupiresti tutti?"] },
-    { nome: "Condizione rispetto all’età", frasi: ["Sembra più giovane?", "Incredibile mantenimento?", "Età biologica vs visiva.", "Invecchiamento VIP?", "Livello WOW per età.", "Stupisce?", "Qualità temporale."] }
+/* Config */
+const PARAMS = [
+  { id:'bellezza', title:'Bellezza (Viso)', frases: ["Guardarla è pericoloso: ti distrae anche se non vuoi.","Ha una faccia che ti rimane in testa più del dovuto.","Cambia l’aria quando entra.","Ti basta un secondo per capire che è sopra la media.","Non serve trucco: ti colpisce e basta.","Se la guardi troppo, perdi lucidità.","Ha quel tipo di viso che non ti lascia scappare."] },
+  { id:'tette', title:'Tette', frases: ["Zero discussioni: valuta il potenziale.","Situazione stabile o orbita?","Quando si muove, tu smetti di parlare.","Livello di rispetto: alto.","Non serve poesia: guarda e giudica.","Impatto visivo immediato.","A volte sono un argomento, qui un problema."] },
+  { id:'culo', title:'Culo', frases: ["Ti passa davanti e ti dimentichi tutto.","Normale o pericoloso per la viabilità?","Non lo guardi: ti cattura.","Ti rimane nella memoria muscolare.","Perdita di concentrazione assicurata.","Cambia il meteo della stanza.","Capisci tutto dal primo sguardo."] },
+  { id:'fascino', title:'Fascino', frases: ["Non capisci perché, ma ti prende.","Non fa niente… e già funziona.","Ti trascina senza sforzo.","Aura che ti sposta l’umore.","Ti attira anche quando non dovrebbe.","Non si spiega: si subisce.","Ti entra nella testa."] },
+  { id:'voce', title:'Voce', frases: ["Ti parla e ti resetta.","La senti una volta e ti resta.","Tono che manda in tilt.","Arma nascosta.","Calda o tagliente: decide lei.","Quando parla, zittisce tutto.","Rischio: ti piace anche quando dice niente."] },
+  { id:'abbigliamento', title:'Abbigliamento', frases: ["Si veste troppo bene per lasciarti tranquillo.","Rende tutto più interessante.","Ogni outfit è un colpo.","Eleganza? Drip? Sì.","Sembra sapere esattamente cosa ti piace.","Non spreca un look.","Anche semplice diventa un problema."] },
+  { id:'porkaggine', title:'PORKAGGINE', frases: ["Tranquilla fuori, fuoco dentro?","Vorresti testarla… ma rischi.","Sa cosa fa.","Sguardo che promette.","Potenziale caos emotivo.","Se vuole ti distrugge.","Non parla: suggerisce."] },
+  { id:'fiero', title:'Quanto ne andresti fiero', frases: ["Gli amici capiscono subito.","Silenzio ammirato? No: rispetto.","Livello ‘non serve dire niente’.","Ti alza il mento automaticamente.","È un upgrade.","L’invidia parte immediata.","Troppo sereno per essere umile."] },
+  { id:'eta', title:'Condizione rispetto all’età', frases: ["Per la sua età? Ingiusta.","Livello avanzato.","Performance incoerente.","O è benedetta o bara.","Cura fuori scala.","L’età non è un limite.","Domina comunque."] }
 ];
 
-let values = [];
-let currentParam = 0;
+const STORAGE_KEY = 'sxrate_v3_inputs';
+const HISTORY_KEY = 'sxrate_v3_history';
+const KRE = 4;
 
-/* GENERA PARAMETRI */
-function startRating() {
-    values = [];
-    currentParam = 0;
-    showParam();
+/* state */
+let state = { index: -1, inputs: {}, bonus: 0, name: '' };
+
+/* helpers */
+const $ = id => document.getElementById(id);
+function showView(id){ document.querySelectorAll('.view').forEach(v=>v.classList.remove('active')); $(id).classList.add('active'); }
+function clamp(n,min,max){ n = Number(n); if(isNaN(n)) return min; return Math.max(min, Math.min(max, n)); }
+function fmt3(n){ return Number(n).toFixed(3); }
+function random(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+
+/* initial wiring */
+$('enterBtn').addEventListener('click', ()=> showView('view-menu'));
+$('infoBtn').addEventListener('click', ()=> showView('view-info'));
+$('infoBack').addEventListener('click', ()=> showView('view-welcome'));
+$('menuCalc').addEventListener('click', ()=> startFlow());
+$('menuHist').addEventListener('click', ()=> showHistory());
+$('homeFromResult').addEventListener('click', ()=> showView('view-menu'));
+$('homeFromHistory').addEventListener('click', ()=> showView('view-menu'));
+$('clearHistory').addEventListener('click', ()=> { if(confirm('Svuotare lo storico?')){ localStorage.removeItem(HISTORY_KEY); showHistory(); } });
+
+/* keypad builder (same for params and bonus) */
+function buildKeypad(containerId, isBonus=false){
+  const keys = ["1","2","3","4","5","6","7","8","9",".","0","⌫"];
+  const container = $(containerId);
+  container.innerHTML = keys.map(k=>`<button class="key" data-key="${k}">${k}</button>`).join('');
+  container.onclick = (e)=> {
+    const k = e.target?.dataset?.key; if(!k) return;
+    const display = (isBonus ? $('bonusDisplay') : $('numDisplay'));
+    handleKey(k,display,isBonus);
+  };
+}
+function handleKey(k,display,isBonus){
+  let v = display.value || '';
+  if(k === '⌫'){ display.value = v.slice(0,-1); return; }
+  if(k === '.'){ if(v.includes('.')) return; if(v==='') v = '0.'; else v += '.'; display.value = v; return; }
+  v += k;
+  const maxLen = isBonus ? 5 : 6; // '1.000' vs '10.000'
+  if(v.length > maxLen) v = v.slice(0,maxLen);
+  const p = parseFloat(v);
+  if(!isNaN(p)){
+    if(!isBonus && p > 10) v = '10.000';
+    if(isBonus && p > 1) v = '1.000';
+  }
+  display.value = v;
 }
 
-/* MOSTRA PARAMETRO */
-function showParam() {
-    goTo("paramScreen".replace("screen","")); // hack to hide all
-    document.querySelectorAll('.screen').forEach(s => s.classList.add('hidden'));
-    document.getElementById("paramScreen").classList.remove("hidden");
-
-    const p = params[currentParam];
-    const frase = p.frasi[Math.floor(Math.random()*p.frasi.length)];
-
-    document.getElementById("paramCaption").textContent = p.nome + " — " + frase;
-    document.getElementById("paramInput").value = "";
+/* Flow functions */
+function startFlow(){
+  state = { index: 0, inputs: {}, bonus: 0, name: '' };
+  const n = prompt('Inserisci il nome della persona (obbligatorio)');
+  state.name = n ? String(n).slice(0,40) : '—';
+  saveTemp();
+  prepareParam();
+  showView('view-param');
 }
 
-function nextParam() {
-    const val = parseFloat(document.getElementById("paramInput").value);
-    if (isNaN(val) || val < 0 || val > 10) {
-        alert("Inserisci un valore valido tra 0.000 e 10.000");
-        return;
-    }
-    values.push(val);
-
-    currentParam++;
-    if (currentParam < params.length) showParam();
-    else calculateFinal();
+/* prepare current param screen */
+function prepareParam(){
+  buildKeypad('keypad', false);
+  const p = PARAMS[state.index];
+  $('paramTitle').textContent = p.title;
+  $('paramDida').textContent = random(p.frases);
+  const step = state.index + 1;
+  $('progressText').textContent = `${step}/${PARAMS.length+1}`;
+  const pct = (step/(PARAMS.length+1))*100;
+  $('progressBar').style.width = pct + '%';
+  // fill if saved
+  const saved = loadTemp();
+  const cur = saved[p.id];
+  $('numDisplay').value = (typeof cur !== 'undefined') ? fmt3(cur) : '';
 }
 
-/* CALCOLO */
-function calculateFinal() {
-    const avg = values.reduce((a,b)=>a+b,0)/values.length;
+/* next/back handling for param view */
+$('btnBack').addEventListener('click', ()=> {
+  if(state.index === 0){ showView('view-menu'); return; }
+  state.index = Math.max(0,state.index-1);
+  prepareParam();
+});
+$('btnNext').addEventListener('click', ()=> {
+  const p = PARAMS[state.index];
+  let val = parseFloat($('numDisplay').value);
+  if(isNaN(val)){ alert('Inserisci un valore valido (0.000–10.000)'); return; }
+  val = clamp(val,0,10);
+  state.inputs[p.id] = Number(fmt3(val));
+  saveTemp();
+  state.index++;
+  if(state.index < PARAMS.length) prepareParam();
+  else prepareBonus();
+  if(state.index < PARAMS.length) showView('view-param');
+});
 
-    // Costante Rum-Enzo K•RE
-    const KRE = 4.213;
+/* bonus screen */
+function prepareBonus(){
+  buildKeypad('keypadBonus', true);
+  $('bonusDida').textContent = random(["Dai il colpo finale.","Il punto che decide tutto.","Se merita di più, è qui.","Il segreto del voto totale.","Extra per veri intenditori.","Per quando la media non basta.","Il piccolo boost che pesa."]);
+  const saved = loadTemp();
+  $('bonusDisplay').value = (typeof saved.bonus !== 'undefined') ? fmt3(saved.bonus) : '0.000';
+  showView('view-bonus');
+}
+$('bonusBack').addEventListener('click', ()=> { state.index = Math.max(0, PARAMS.length-1); prepareParam(); showView('view-param'); });
+$('bonusDone').addEventListener('click', ()=> {
+  let b = parseFloat($('bonusDisplay').value);
+  if(isNaN(b)) b = 0;
+  b = clamp(b,0,1);
+  state.bonus = Number(fmt3(b));
+  saveTemp();
+  computeAndShowResult();
+});
 
-    let mapped;
-    if (avg <= 4) mapped = avg * 0.125;
-    else if (avg <= 7) mapped = 0.5 + ((avg-4)/3)*0.5;
-    else if (avg <= 8.5) mapped = 1;
-    else mapped = 1 + (Math.exp((avg-8.5)*KRE)-1);
+/* compute final */
+function computeAndShowResult(){
+  const s = loadTemp();
+  const vals = PARAMS.map(p=> clamp(Number(s[p.id]||0),0,10));
+  const media10 = vals.reduce((a,b)=>a+b,0)/vals.length;
+  const bonus = clamp(Number(s.bonus||state.bonus||0),0,1);
+  const x = media10 + bonus; // up to 11
 
-    showResult(mapped);
+  function convert(x){
+    if(x <= 4) return 0.125 * x;
+    if(x <= 7) return 0.5 + ((x - 4)/3) * 0.5;
+    if(x < 8.5) return 1.0;
+    if(x <= 10) return 1 + 4 * Math.pow((x - 8.5)/1.5, KRE);
+    return 5 + Math.exp(KRE * (x - 10));
+  }
+  const val = convert(x);
+  $('resultValue').textContent = fmt3(val);
+  let caption = '';
+  if(val < 0.5) caption = "ASSOLUTAMENTE NON CHIAVARE";
+  else if(val < 0.9) caption = "SE È GIÀ DENTRO NON LO TOGLIERE";
+  else if(val < 4.5) caption = "SCOPAAAAA";
+  else if(val < 5) caption = "LIVELLO STXPRO";
+  else caption = "POTRESTI MORIRE PER CHIAVARCI";
+  $('resultCaption').textContent = caption;
+  $('resultMeta').textContent = `Media: ${fmt3(media10)} • Bonus: ${fmt3(bonus)} • x=${fmt3(x)}`;
+
+  showView('view-result');
 }
 
-/* RISULTATO */
-function showResult(v) {
-    goTo("resultScreen".replace("screen",""));
-    document.getElementById("finalValue").textContent = v.toFixed(3);
+/* history */
+function saveHistory(obj){
+  const h = JSON.parse(localStorage.getItem(HISTORY_KEY)||'[]');
+  h.unshift(obj);
+  localStorage.setItem(HISTORY_KEY, JSON.stringify(h.slice(0,500)));
+}
+$('saveBtn').addEventListener('click', ()=> {
+  const res = $('resultValue').textContent;
+  const meta = $('resultMeta').textContent;
+  saveHistory({ name: state.name||'—', value: Number(res), meta, date: new Date().toLocaleString() });
+  alert('Salvato nello storico.');
+});
+$('shareBtn').addEventListener('click', ()=> {
+  const text = `SXRATE ${state.name||'—'} → ${$('resultValue').textContent} (K•RE)`;
+  if(navigator.share) navigator.share({title:'SXRATE', text});
+  else { navigator.clipboard.writeText(text); alert('Copiato negli appunti.'); }
+});
 
-    let meaning = "";
-    if (v < 0.5) meaning = "ASSOLUTAMENTE NON CHIAVARE";
-    else if (v < 1) meaning = "SE È GIÀ DENTRO NON LO TOGLIERE";
-    else if (v < 4.5) meaning = "SCOPAAAAA";
-    else if (v < 5) meaning = "SE FOSSE LEGALE LO STUPRO…";
-    else meaning = "POTRESTI MORIRE PER CHIAVARCI";
-
-    document.getElementById("finalMeaning").textContent = meaning;
-
-    saveHistory(v);
+function showHistory(){
+  showView('view-history');
+  const list = JSON.parse(localStorage.getItem(HISTORY_KEY)||'[]');
+  const container = $('historyList');
+  if(!list.length){ container.innerHTML = '<p class="small-muted">Nessun risultato salvato.</p>'; return; }
+  container.innerHTML = list.map(it=>`<div class="history-item"><div><strong>${escapeHtml(it.name)}</strong><div class="small-muted">${escapeHtml(it.date)}</div></div><div style="text-align:right"><div style="font-weight:800">${Number(it.value).toFixed(3)}</div><div class="small-muted">${escapeHtml(it.meta)}</div></div></div>`).join('');
 }
 
-/* STORICO */
-function saveHistory(v) {
-    const old = JSON.parse(localStorage.getItem("sxrate") || "[]");
-    old.push({ value: v.toFixed(3), time: new Date().toLocaleString() });
-    localStorage.setItem("sxrate", JSON.stringify(old));
+/* persistence for flow */
+function saveTemp(){
+  const payload = Object.assign({}, state.inputs, { bonus: state.bonus, name: state.name });
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
 }
+function loadTemp(){ try{ return JSON.parse(localStorage.getItem(STORAGE_KEY))||{} }catch(e){ return {}; } }
 
-function showHistory() {
-    goTo("historyScreen".replace("screen",""));
-    const list = JSON.parse(localStorage.getItem("sxrate") || "[]");
+/* start / init */
+(function init(){
+  // wire keypad placeholders
+  buildKeypad('keypad', false);
+  buildKeypad('keypadBonus', true);
+  // restore any temp
+  const s = loadTemp();
+  if(Object.keys(s).length) { /* leave restore to flow as needed */ }
+})();
 
-    let html = "";
-    list.reverse().forEach(i => {
-        html += `<p><b>${i.value}</b> — ${i.time}</p>`;
-    });
-    document.getElementById("historyList").innerHTML = html || "Nessun dato salvato.";
-}
+/* utilities */
+function escapeHtml(s){ return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function clamp(n,min,max){ n = Number(n); if(isNaN(n)) n = min; return Math.max(min, Math.min(max, n)); }
 </script>
 
 </body>
