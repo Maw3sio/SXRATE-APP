@@ -1,10 +1,10 @@
 {
   "name": "SXRATE",
   "short_name": "SXRATE",
-  "start_url": "index.html",
+  "start_url": "./index.html",
   "display": "standalone",
-  "background_color": "#ff29c7",
-  "theme_color": "#ff29c7",
+  "background_color": "#ff33b8",
+  "theme_color": "#00b7ff",
   "icons": [
     {
       "src": "icon-512.png",
